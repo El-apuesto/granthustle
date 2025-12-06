@@ -3,6 +3,7 @@ import { Calendar, DollarSign, Bookmark, ExternalLink, ArrowUpDown, Lock } from 
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { getFingerprint } from '../utils/fingerprint';
+import { loadStripe } from '@stripe/stripe-js';
 
 interface Grant {
   id: string;
@@ -165,7 +166,7 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
           Upgrade to unlock unlimited grant matches and access all premium features.
         </p>
         <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors text-lg">
-          Upgrade for $49/month
+          Upgrade for $9.99/1st month
         </button>
         <p className="text-slate-500 text-sm mt-4">
           Your limit resets on the 1st of next month
@@ -210,7 +211,7 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
             You're seeing 5 of 8,000+ available grants. Upgrade to see all matches.
           </p>
           <button className="px-4 py-2 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700 transition-colors">
-            Upgrade for $9/month
+            Upgrade for $9.99/1st month
           </button>
         </div>
       )}
