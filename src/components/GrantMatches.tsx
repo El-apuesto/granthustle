@@ -154,24 +154,36 @@ if (limitExceeded) {
         <Lock className="w-12 h-12 text-red-400 mx-auto mb-6" />
         <h3 className="text-2xl font-bold text-white mb-4">Monthly Limit Reached</h3>
         <p className="text-gray-300 mb-6">You've used all 5 free monthly searches.</p>
-        <button
-          onClick={async () => {
-            const stripe = await loadStripe('pk_live_YOUR_REAL_KEY');
-            await stripe?.redirectToCheckout({
-              lineItems: [{ price: 'price_YOUR_REAL_PRICE_ID', quantity: 1 }],
-              mode: 'subscription',
-              successUrl: window.location.origin + '/success',
-              cancelUrl: window.location.origin,
-            });
-          }}
-          className="px-8 py-4 bg-emerald-600 text-white rounded-lg font-bold text-xl hover:bg-emerald-700"
-        >
-          Upgrade for $9.99 first month
-          <br />
-          <span className="text-sm">then $27.99/month (cancel anytime)</span>
-        </button>
-        <p className="text-sm text-gray-500 mt-4">Limit resets 1st of next month</p>
-      </div>
+if (limitExceeded) {
+  return (
+    <div className="bg-slate-800 border border-red-700 rounded-lg p-12 text-center">
+      <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
+      <h3 className="text-2xl font-bold text-white mb-3">Monthly Limit Reached</h3>
+      <p className="text-slate-300 text-lg mb-2">
+        You've used all 5 of your free monthly searches.
+      </p>
+      <p className="text-slate-300 text-lg mb-6">
+        Upgrade to unlock unlimited grant matches and access all premium features.
+      </p>
+      <button
+        onClick={async () => {
+          const stripe = await loadStripe('pk_live_YOUR_PUBLISHABLE_KEY');
+          await stripe?.redirectToCheckout({
+            lineItems: [{ price: 'price_YOUR_999_TO_2799_PRICE_ID', quantity: 1 }],
+            mode: 'subscription',
+            successUrl: window.location.origin + '/success',
+            cancelUrl: window.location.origin,
+          });
+        }}
+        className="px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-xl shadow-lg transition transform hover:scale-105"
+      >
+        Upgrade for $9.99 first month
+        <br />
+        <span className="text-lg">then $27.99/month (cancel anytime)</span>
+      </button>
+      <p className="text-sm text-gray-500 mt-4">
+        Your limit resets on the 1st of next month
+      </p>
     </div>
   );
 }
