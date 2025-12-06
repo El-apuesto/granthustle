@@ -161,20 +161,22 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
         <h3 className="text-2xl font-bold text-white mb-3">Monthly Limit Reached</h3>
         <p className="text-slate-300 text-lg mb-2">
           You've used all 5 of your free monthly searches.
-        </p>
-        <p className="text-slate-400 mb-6">
-          Upgrade to unlock unlimited grant matches and access all premium features.
-        </p>
-        <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors text-lg">
-          Upgrade for $9.99/1st month
-        </button>
-        <p className="text-slate-500 text-sm mt-4">
-          Your limit resets on the 1st of next month
-        </p>
-      </div>
-    );
-  }
-
+        <button
+  onClick={async () => {
+    const stripe = await loadStripe('pk_live_YOUR_PUBLISHABLE_KEY');
+    stripe?.redirectToCheckout({
+      lineItems: [{ price: 'price_YOUR_999_TO_2799_PRICE_ID', quantity: 1 }],
+      mode: 'subscription',
+      successUrl: window.location.origin + '/success',
+      cancelUrl: window.location.origin,
+    });
+  }}
+  className="px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-xl shadow-lg"
+>
+  Upgrade for $9.99 first month
+  <br />
+  <span className="text-lg">then $27.99/month (cancel anytime)</span>
+</button>
   if (grants.length === 0) {
     return (
       <div className="bg-slate-800 border border-slate-700 rounded-lg p-12 text-center">
