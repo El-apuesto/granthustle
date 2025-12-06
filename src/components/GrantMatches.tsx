@@ -147,21 +147,30 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
               )}
             </div>
             <p className="text-gray-300 mb-4 line-clamp-3">{grant.description}</p>
-            <div className="flex flex-wrap gap-6 text-sm">
-              <span className="flex items-center gap-1">
-                <DollarSign className="w-4 h-4 text-emerald-500" />
-                {formatCurrency(grant.award_min)} – {formatCurrency(grant.award_max)}
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="w-4 h-4 text-emerald-500" />
-                {formatDeadline(grant.deadline, grant.is_rolling)}
-              </span>
-            </div>
-            <a href={grant.apply_url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium">
-              View Grant <ExternalLink className="w-4 h-4 inline ml-1" />
-            </a>
-          </div>
-        ))}
+if (limitExceeded) {
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+      <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full text-center">
+        <Lock className="w-12 h-12 text-red-400 mx-auto mb-6" />
+        <h3 className="text-2xl font-bold text-white mb-4">Monthly Limit Reached</h3>
+        <p className="text-gray-300 mb-6">You've used all 5 free monthly searches.</p>
+        <button
+          onClick={async () => {
+            const stripe = await loadStripe('pk_live_YOUR_REAL_KEY');
+            await stripe?.redirectToCheckout({
+              lineItems: [{ price: 'price_YOUR_REAL_PRICE_ID', quantity: 1 }],
+              mode: 'subscription',
+              successUrl: window.location.origin + '/success',
+              cancelUrl: window.location.origin,
+            });
+          }}
+          className="px-8 py-4 bg-emerald-600 text-white rounded-lg font-bold text-xl hover:bg-emerald-700"
+        >
+          Upgrade for $9.99 first month
+          <br />
+          <span className="text-sm">then $27.99/month (cancel anytime)</span>
+        </button>
+        <p className="text-sm text-gray-500 mt-4">Limit resets 1st of next month</p>
       </div>
     </div>
   );
