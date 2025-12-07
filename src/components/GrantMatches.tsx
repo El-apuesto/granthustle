@@ -4,8 +4,11 @@ import { supabase from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { getFingerprint } from '../utils/fingerprint';
 import { loadStripe } from '@stripe/stripe-js';
+<<<<<<< HEAD
 
 const stripePromise = loadStripe('pk_live_YOUR_PUBLISHABLE_KEY_HERE'); // ← replace
+=======
+>>>>>>> 531941e (add secure Stripe checkout)
 
 interface Grant {
   id: string;
@@ -77,6 +80,7 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
 
   if (limitExceeded) {
     return (
+<<<<<<< HEAD
       <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
         <div className="bg-slate-800 rounded-2xl p-10 max-w-md w-full text-center">
           <Lock className="w-20 h-20 text-red-500 mx-auto mb-6" />
@@ -104,6 +108,23 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
             Your limit resets on the 1st of next month
           </p>
         </div>
+=======
+      <div className="bg-slate-800 border border-red-700 rounded-lg p-12 text-center">
+        <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
+        <h3 className="text-2xl font-bold text-white mb-3">Monthly Limit Reached</h3>
+        <p className="text-slate-300 text-lg mb-2">
+          You've used all 5 of your free monthly searches.
+        </p>
+        <p className="text-slate-400 mb-6">
+          Upgrade to unlock unlimited grant matches and access all premium features.
+        </p>
+        <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors text-lg">
+          Upgrade for $9.99/1st month
+        </button>
+        <p className="text-slate-500 text-sm mt-4">
+          Your limit resets on the 1st of next month
+        </p>
+>>>>>>> 531941e (add secure Stripe checkout)
       </div>
     );
   }
@@ -132,7 +153,22 @@ export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
         </button>
       </div>
 
+<<<<<<< HEAD
       <div className="grid gap-6">
+=======
+      {!isPro && grants.length >= 5 && (
+        <div className="mb-6 bg-emerald-900/30 border border-emerald-700 rounded-lg p-4">
+          <p className="text-emerald-200 mb-2 font-semibold">
+            You're seeing 5 of 8,000+ available grants. Upgrade to see all matches.
+          </p>
+          <button className="px-4 py-2 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700 transition-colors">
+            Upgrade for $9.99/1st month
+          </button>
+        </div>
+      )}
+
+      <div className="space-y-4">
+>>>>>>> 531941e (add secure Stripe checkout)
         {grants.map(grant => (
           <div key={grant.id} className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-emerald-600 transition">
             <div className="flex justify-between items-start mb-4">
