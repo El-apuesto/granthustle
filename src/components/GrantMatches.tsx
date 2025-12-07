@@ -1,11 +1,11 @@
+// src/components/GrantMatches.tsx
+"use client";
+
 import { Lock } from "lucide-react";
+import UpgradeButton from "./UpgradeButton"; // This is the working one we already have
 
-interface GrantMatchesProps {
-  onUpgrade: () => void;
-}
-
-export default function GrantMatches({ onUpgrade }: GrantMatchesProps) {
-  const hasReachedLimit = true;
+export default function GrantMatches() {
+  const hasReachedLimit = true; // Change this to your real logic later
 
   if (!hasReachedLimit) {
     return (
@@ -31,12 +31,8 @@ export default function GrantMatches({ onUpgrade }: GrantMatchesProps) {
           You've used all 5 of your free monthly searches.
         </p>
 
-        <button
-          onClick={onUpgrade}
-          className="w-full py-6 bg-emerald-600 hover:bg-emerald-500 text-white text-2xl font-bold rounded-2xl transition transform hover:scale-105"
-        >
-          Upgrade for $9.99/1st month
-        </button>
+        {/* THIS IS NOW THE WORKING BUTTON */}
+        <UpgradeButton />
 
         <p className="text-sm text-slate-500 mt-8">
           Your limit resets on the 1st of next month
