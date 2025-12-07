@@ -1,0 +1,20 @@
+import Stripe from "stripe";
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).end();
+
+  const stripe = new Stripe(process.env.STRIPE_SK_LIVE!, {
+    apiVersion: "2024-06-20",
+  });
+
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    line_items: [
+      { price: "price_1QuZmaG85r4wKmWWyR2wxy3R", quantity: 1 },
+    ],
+    success_url: "https://granthustle.org/dashboard?success=true",
+    cancel_url: "https://granthustle.org/dashboard?canceled=true",
+  });
+
+  return res.status(200).json({ url: session.url });
+}
