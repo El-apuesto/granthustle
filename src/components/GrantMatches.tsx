@@ -1,225 +1,28 @@
-import { useState, useEffect } from 'react';
-import { Calendar, DollarSign, Bookmark, ExternalLink, ArrowUpDown, Lock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { getFingerprint } from '../utils/fingerprint';
-import { loadStripe } from '@stripe/stripe-js';
-<<<<<<< HEAD
-
-const stripePromise = loadStripe('pk_live_YOUR_PUBLISHABLE_KEY_HERE'); // ← replace
-=======
->>>>>>> 531941e (add secure Stripe checkout)
-
-interface Grant {
-  id: string;
-  title: string;
-  funder_name: string;
-  funder_type: string;
-  description: string;
-  award_min: number;
-  award_max: number;
-  deadline: string | null;
-  is_rolling: boolean;
-  apply_url: string;
-}
+import { Lock } from "lucide-react";
 
 interface GrantMatchesProps {
-  isPro: boolean;
-  profile: any;
+  onUpgrade: () => void;
 }
 
-export default function GrantMatches({ isPro, profile }: GrantMatchesProps) {
-  const { user } = useAuth();
-  const [grants, setGrants] = useState<Grant[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'deadline' | 'award'>('deadline');
-  const [savedGrantIds, setSavedGrantIds] = useState<Set<string>>(new Set());
-  const [limitExceeded, setLimitExceeded] = useState(false);
+export default function GrantMatches({ onUpgrade }: GrantMatchesProps) {
+  const hasReachedLimit = true;
 
-  useEffect(() => {
-    loadGrants();
-    if (user && isPro) loadSavedGrants();
-  }, []);
-
-  const loadGrants = async () => {
-    setLoading(true);
-    try {
-      if (!isPro && user) {
-        const { data: count } = await supabase.rpc('increment_match_counter', { user_uuid: user.id });
-        if (count > 5) {
-          setLimitExceeded(true);
-          const fp = await getFingerprint();
-          await supabase.rpc('log_abuse_attempt', { user_uuid: user.id, fingerprint_id: fp, abuse_type_param: 'exceeded_free_limit' });
-          setLoading(false);
-          return;
-        }
-      }
-
-      const { data, error } = await supabase
-        .from('grants')
-        .select('*')
-        .eq('is_active', true)
-        .order(sortBy === 'deadline' ? 'deadline' : 'award_max', { ascending: sortBy === 'deadline' })
-        .limit(isPro ? 10000 : 50);
-
-      if (error) throw error;
-      setGrants(data || []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadSavedGrants = async () => {
-    const { data } = await supabase.from('saved_grants').select('grant_id').eq('user_id', user.id);
-    if (data) setSavedGrantIds(new Set(data.map(d => d.grant_id)));
-  };
-
-  if (loading) return <div className="text-center py-12 text-white">Loading grants...</div>;
-
-  if (limitExceeded) {
+  if (!hasReachedLimit) {
     return (
-<<<<<<< HEAD
-      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-        <div className="bg-slate-800 rounded-2xl p-10 max-w-md w-full text-center">
-          <Lock className="w-20 h-20 text-red-500 mx-auto mb-6" />
-          <h3 className="text-3xl font-bold text-white mb-6">Monthly Limit Reached</h3>
-          <p className="text-lg text-gray-300 mb-8">
-            You've used all 5 free monthly searches.
-          </p>
-          <button
-            onClick={async () => {
-              const stripe = await stripePromise;
-              await stripe?.redirectToCheckout({
-                lineItems: [{ price: 'price_YOUR_999_TO_2799_PRICE_ID', quantity: 1 }],
-                mode: 'subscription',
-                successUrl: window.location.origin + '/success',
-                cancelUrl: window.location.origin,
-              });
-            }}
-            className="px-10 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-xl shadow-2xl transition"
-          >
-            Upgrade for $9.99 first month
-            <br />
-            <span className="text-lg">then $27.99/month (cancel anytime)</span>
-          </button>
-          <p className="text-gray-500 text-sm mt-8">
-            Your limit resets on the 1st of next month
-          </p>
-        </div>
-=======
-      <div className="bg-slate-800 border border-red-700 rounded-lg p-12 text-center">
-        <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
-        <h3 className="text-2xl font-bold text-white mb-3">Monthly Limit Reached</h3>
-        <p className="text-slate-300 text-lg mb-2">
-          You've used all 5 of your free monthly searches.
-        </p>
-        <p className="text-slate-400 mb-6">
-          Upgrade to unlock unlimited grant matches and access all premium features.
-        </p>
-        <button className="px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors text-lg">
-          Upgrade for $9.99/1st month
-        </button>
-        <p className="text-slate-500 text-sm mt-4">
-          Your limit resets on the 1st of next month
-        </p>
->>>>>>> 531941e (add secure Stripe checkout)
+      <div className="p-8">
+        <h2 className="text-3xl font-bold text-emerald-400 mb-6">My Matches</h2>
+        <p className="text-slate-300">Your grant matches will appear here soon...</p>
       </div>
     );
   }
 
-  if (grants.length === 0) {
-    return (
-      <div className="bg-slate-800 rounded-xl p-12 text-center">
-        <p className="text-xl text-gray-300">No grants match your profile yet. Check back soon!</p>
-      </div>
-    );
-  }
-
-  const formatCurrency = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
-  const formatDeadline = (d: string | null, rolling: boolean) => rolling ? 'Rolling' : d ? new Date(d).toLocaleDateString() : 'TBD';
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white">Your Matches</h2>
-          <p className="text-gray-400">{grants.length} found</p>
-        </div>
-        <button onClick={() => { setSortBy(sortBy === 'deadline' ? 'award' : 'deadline'); loadGrants(); }} className="flex items-center gap-2 px-4 py-2 bg-slate-700 rounded-lg">
-          <ArrowUpDown className="w-5 h-5" />
-          Sort by {sortBy === 'deadline' ? 'Award' : 'Deadline'}
-        </button>
-      </div>
-
-<<<<<<< HEAD
-      <div className="grid gap-6">
-=======
-      {!isPro && grants.length >= 5 && (
-        <div className="mb-6 bg-emerald-900/30 border border-emerald-700 rounded-lg p-4">
-          <p className="text-emerald-200 mb-2 font-semibold">
-            You're seeing 5 of 8,000+ available grants. Upgrade to see all matches.
-          </p>
-          <button className="px-4 py-2 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700 transition-colors">
-            Upgrade for $9.99/1st month
-          </button>
-        </div>
-      )}
-
-      <div className="space-y-4">
->>>>>>> 531941e (add secure Stripe checkout)
-        {grants.map(grant => (
-          <div key={grant.id} className="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-emerald-600 transition">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-xl font-bold text-white">{grant.title}</h3>
-                <p className="text-gray-400">{grant.funder_name} • {grant.funder_type}</p>
-              </div>
-              {isPro && (
-                <button onClick={() => toggleSave(grant.id)}>
-                  <Bookmark className={`w-6 h-6 ${savedGrantIds.has(grant.id) ? 'fill-emerald-500 text-emerald-500' : 'text-gray-500'}`} />
-                </button>
-              )}
-            </div>
-            <p className="text-gray-300 mb-4 line-clamp-3">{grant.description}</p>
-if (limitExceeded) {
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 rounded-2xl p-8 max-w-md w-full text-center">
-        <Lock className="w-12 h-12 text-red-400 mx-auto mb-6" />
-        <h3 className="text-2xl font-bold text-white mb-4">Monthly Limit Reached</h3>
-        <p className="text-gray-300 mb-6">You've used all 5 free monthly searches.</p>
-if (limitExceeded) {
-  return (
-    <div className="bg-slate-800 border border-red-700 rounded-lg p-12 text-center">
-      <Lock className="w-16 h-16 text-red-500 mx-auto mb-4" />
-      <h3 className="text-2xl font-bold text-white mb-3">Monthly Limit Reached</h3>
-      <p className="text-slate-300 text-lg mb-2">
-        You've used all 5 of your free monthly searches.
-      </p>
-      <p className="text-slate-300 text-lg mb-6">
-        Upgrade to unlock unlimited grant matches and access all premium features.
-      </p>
-      <button
-        onClick={async () => {
-          const stripe = await loadStripe('pk_live_YOUR_PUBLISHABLE_KEY');
-          await stripe?.redirectToCheckout({
-            lineItems: [{ price: 'price_YOUR_999_TO_2799_PRICE_ID', quantity: 1 }],
-            mode: 'subscription',
-            successUrl: window.location.origin + '/success',
-            cancelUrl: window.location.origin,
-          });
-        }}
-        className="px-10 py-5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-xl shadow-lg transition transform hover:scale-105"
-      >
-        Upgrade for $9.99 first month
-        <br />
-        <span className="text-lg">then $27.99/month (cancel anytime)</span>
-      </button>
-      <p className="text-sm text-gray-500 mt-4">
-        Your limit resets on the 1st of next month
-      </p>
-    </div>
-  );
-}
+      <div className="bg-slate-900 rounded-3xl p-10 max-w-md w-full text-center border border-emerald-500/30">
+        <div className="w-24 h-24 mx-auto mb-8 bg-red-500/20 rounded-full flex items-center justify-center">
+          <Lock className="w-14 h-14 text-red-500" />
+        </div>
+
+        <h2 className="text-4xl font-black text-white mb-6">
+          Monthly Limit Reached
+        </h2>
