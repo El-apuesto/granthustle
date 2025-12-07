@@ -1,14 +1,50 @@
 "use client";
 
 import { DollarSign } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { useCallback } from "react";
 
 interface LandingProps {
   onGetStarted: () => void;
 }
 
 export default function Landing({ onGetStarted }: LandingProps) {
+  const { user } = useAuth();
+
+  // -----------------------------
+  // Stripe Subscription Handler
+  // -----------------------------
+  const handleSubscribe = useCallback(async () => {
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user?.id || null, // Still works for logged-out users
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No redirect URL returned from backend:", data);
+        alert("Unable to start subscription checkout. Try again.");
+      }
+    } catch (err) {
+      console.error("Stripe session error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  }, [user]);
+
+  // -----------------------------
+  // Component Render
+  // -----------------------------
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      {/* NAV */}
       <nav className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
@@ -24,6 +60,7 @@ export default function Landing({ onGetStarted }: LandingProps) {
         </div>
       </nav>
 
+      {/* HERO */}
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
           Your rich uncle died<br />
@@ -42,18 +79,9 @@ export default function Landing({ onGetStarted }: LandingProps) {
           Find My Money (5 free matches)
         </button>
 
+        {/* STRIPE SUBSCRIBE BUTTON */}
         <button
-          onClick={() => {
-            const stripe = (window as any).Stripe(
-              "pk_live_REPLACE_ME"
-            );
-            stripe.redirectToCheckout({
-              lineItems: [{ price: "price_REPLACE_ME", quantity: 1 }],
-              mode: "subscription",
-              successUrl: window.location.origin + "/success",
-              cancelUrl: window.location.origin,
-            });
-          }}
+          onClick={handleSubscribe}
           className="px-16 py-10 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-5xl rounded-3xl shadow-2xl transition transform hover:scale-105"
         >
           Subscribe Now – $9.99 first month<br />
@@ -65,6 +93,7 @@ export default function Landing({ onGetStarted }: LandingProps) {
         </p>
       </div>
 
+      {/* FOOTER */}
       <footer className="border-t border-slate-700 bg-slate-900/50 mt-32">
         <div className="max-w-7xl mx-auto px-4 py-8 text-center text-slate-400 text-sm">
           <p className="mb-2">
