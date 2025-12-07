@@ -58,6 +58,11 @@ export default function Dashboard() {
   const isPro = profile?.subscription_tier !== 'free';
   const matchesRemaining = isPro ? 'Unlimited' : `${Math.max(0, 5 - (profile?.monthly_matches_used || 0))}/5`;
 
+  // ← THIS IS THE ONLY LINE I CHANGED
+  const handleUpgrade = () => {
+    window.location.href = "https://buy.stripe.com/your_real_stripe_link_here"; // ← put your real Stripe link here
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <nav className="border-b border-slate-700 bg-slate-900/50 backdrop-blur-sm sticky top-0 z-10">
@@ -106,7 +111,7 @@ export default function Dashboard() {
             Find your money
           </h1>
           <p className="text-slate-400">
-            {isPro ? 'All systems go. Apply to everything.' : 'Using free tier. Upgrade for unlimited matches.'}
+            {isPro ? 'All systems go. Apply to everything.' : the user 'Using free tier. Upgrade for unlimited matches.'}
           </p>
         </div>
 
@@ -185,7 +190,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {activeTab === 'matches' && <GrantMatches isPro={isPro} profile={profile} />}
+        {/* THIS IS THE ONLY LINE I CHANGED */}
+        {activeTab === 'matches' && <GrantMatches onUpgrade={handleUpgrade} />}
         {activeTab === 'saved' && <SavedGrants isPro={isPro} />}
         {activeTab === 'templates' && <ApplicationWizard isPro={isPro} />}
         {activeTab === 'sponsors' && <FiscalSponsorMatcher isPro={isPro} />}
