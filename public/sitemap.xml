@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.YOUR_DOMAIN_HERE.com/</loc>
+    <priority>1.00</priority>
+    <changefreq>daily</changefreq>
+  </url>
+
+  <!-- Static pages -->
+  <url>
+    <loc>https://www.YOUR_DOMAIN_HERE.com/about</loc>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.YOUR_DOMAIN_HERE.com/pricing</loc>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Add more static routes or use the generator script to add dynamic grant pages -->
+</urlset>
