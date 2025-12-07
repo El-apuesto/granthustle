@@ -1,0 +1,8 @@
+# robots.txt — GrantHustle / Grant Geenie
+User-agent: *
+Allow: /
+
+# Crawl-delay can be configured per-host if needed (seconds)
+# Crawl-delay: 10
+
+Sitemap: /sitemap.xml
