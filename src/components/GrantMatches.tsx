@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, DollarSign, Bookmark, ExternalLink, ArrowUpDown, Lock } from 'lucide-react';
-import { supabase from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { getFingerprint } from '../utils/fingerprint';
 import { loadStripe } from '@stripe/stripe-js';
