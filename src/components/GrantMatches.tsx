@@ -26,3 +26,22 @@ export default function GrantMatches({ onUpgrade }: GrantMatchesProps) {
         <h2 className="text-4xl font-black text-white mb-6">
           Monthly Limit Reached
         </h2>
+
+        <p className="text-xl text-slate-300 mb-10 leading-relaxed">
+          You've used all 5 of your free monthly searches.
+        </p>
+
+        <button
+          onClick={onUpgrade}
+          className="w-full py-6 bg-emerald-600 hover:bg-emerald-500 text-white text-2xl font-bold rounded-2xl transition transform hover:scale-105"
+        >
+          Upgrade for $9.99/1st month
+        </button>
+
+        <p className="text-sm text-slate-500 mt-8">
+          Your limit resets on the 1st of next month
+        </p>
+      </div>
+    </div>
+  );
+}
