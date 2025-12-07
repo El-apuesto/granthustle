@@ -1,4 +1,8 @@
 // app/api/create-checkout-session/route.ts
+
+// THIS LINE IS THE ONLY ONE ADDED — it forces no caching forever
+export const dynamic = "force-dynamic";
+
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -13,12 +17,12 @@ export async function POST() {
       payment_method_types: ["card"],
       line_items: [
         {
-          price: "price_1QuZmaG85r4wKmWWyR2wxy3R", // ← your live price ID
+          price: "price_1QuZmaG85r4wKmWWyR2wxy3R",
           quantity: 1,
         },
       ],
       success_url: "https://granthustle.org/dashboard?success=true",
-      cancel_url:  "https://granthustle.org/dashboard?canceled=true",
+      cancel_url: "https://granthustle.org/dashboard?canceled=true",
     });
 
     return NextResponse.json({ url: session.url });
