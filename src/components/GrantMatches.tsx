@@ -1,42 +1,43 @@
 // src/components/GrantMatches.tsx
 "use client";
 
-import { Lock } from "lucide-react";
-import UpgradeButton from "./UpgradeButton"; // This is the working one we already have
+import { useState } from "react";
+import UpgradeButton from "./UpgradeButton"; // added
 
-export default function GrantMatches() {
-  const hasReachedLimit = true; // Change this to your real logic later
+export default function GrantMatches(props) {
+  const { matches } = props;
+  const [limitReached, setLimitReached] = useState(false);
 
-  if (!hasReachedLimit) {
-    return (
-      <div className="p-8">
-        <h2 className="text-3xl font-bold text-emerald-400 mb-6">My Matches</h2>
-        <p className="text-slate-300">Your grant matches will appear here soon...</p>
-      </div>
-    );
-  }
+  const handleUseMatch = () => {
+    if (/* logic detecting limit */ false) {
+      setLimitReached(true);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900 rounded-3xl p-10 max-w-md w-full text-center border border-emerald-500/30">
-        <div className="w-24 h-24 mx-auto mb-8 bg-red-500/20 rounded-full flex items-center justify-center">
-          <Lock className="w-14 h-14 text-red-500" />
+    <div>
+      {limitReached && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-xl max-w-md w-full shadow-xl text-center">
+            <h2 className="text-2xl font-bold mb-4">You've used all free matches</h2>
+            <p className="opacity-80 mb-6">
+              Upgrade to continue matching.
+            </p>
+
+            {/* NEW WORKING BUTTON — replaces old onUpgrade button */}
+            <UpgradeButton />
+
+          </div>
         </div>
+      )}
 
-        <h2 className="text-4xl font-black text-white mb-6">
-          Monthly Limit Reached
-        </h2>
-
-        <p className="text-xl text-slate-300 mb-10 leading-relaxed">
-          You've used all 5 of your free monthly searches.
-        </p>
-
-        {/* THIS IS NOW THE WORKING BUTTON */}
-        <UpgradeButton />
-
-        <p className="text-sm text-slate-500 mt-8">
-          Your limit resets on the 1st of next month
-        </p>
+      {/* rest of your component */}
+      <div>
+        {matches?.map((m) => (
+          <div key={m.id} className="p-4 border-b">
+            {m.title}
+          </div>
+        ))}
       </div>
     </div>
   );
