@@ -1,40 +1,40 @@
+// /api/create-checkout-session.ts
+
 import Stripe from "stripe";
+import { VITE_STRIPE_SECRET_KEY } from "$env/static/private";
 
-export const config = {
-  runtime: "edge",
-};
-
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
-  }
-
+export const POST = async (req) => {
   try {
-    const stripe = new Stripe(process.env.STRIPE_SK_LIVE!, {
-      apiVersion: "2024-06-20",
+    const { userId } = await req.json();
+
+    const stripe = new Stripe(VITE_STRIPE_SECRET_KEY, {
+      apiVersion: "2023-10-16",
     });
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
+      payment_method_types: ["card"],
       line_items: [
         {
-          price: "price_1QuZmaG85r4wKmWWyR2wxy3R",
+          price: "price_XXXXX", // your monthly subscription price id
           quantity: 1,
         },
       ],
-      success_url: "https://granthustle.org/dashboard?success=true",
-      cancel_url: "https://granthustle.org/dashboard?canceled=true",
+      success_url: `${req.headers.get("origin")}/success`,
+      cancel_url: `${req.headers.get("origin")}/`,
+      metadata: {
+        supabase_user_id: userId,
+      },
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
-      status: 200,
       headers: { "Content-Type": "application/json" },
     });
-
-  } catch (err: any) {
+  } catch (err) {
+    console.error("Stripe session error:", err);
     return new Response(JSON.stringify({ error: err.message }), {
-      status: 500,
+      status: 400,
       headers: { "Content-Type": "application/json" },
     });
   }
-}
+};
