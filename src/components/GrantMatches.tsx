@@ -2,14 +2,25 @@
 "use client";
 
 import { useState } from "react";
-import UpgradeButton from "./UpgradeButton"; // added
+import UpgradeButton from "./UpgradeButton";
 
-export default function GrantMatches(props) {
-  const { matches } = props;
+interface Grant {
+  id: string;
+  title: string;
+}
+
+interface Props {
+  matches: Grant[];
+}
+
+export default function GrantMatches({ matches }: Props) {
   const [limitReached, setLimitReached] = useState(false);
 
   const handleUseMatch = () => {
-    if (/* logic detecting limit */ false) {
+    // TODO: connect your match-limit logic
+    const hitLimit = false;
+
+    if (hitLimit) {
       setLimitReached(true);
     }
   };
@@ -24,17 +35,18 @@ export default function GrantMatches(props) {
               Upgrade to continue matching.
             </p>
 
-            {/* NEW WORKING BUTTON — replaces old onUpgrade button */}
             <UpgradeButton />
-
           </div>
         </div>
       )}
 
-      {/* rest of your component */}
       <div>
         {matches?.map((m) => (
-          <div key={m.id} className="p-4 border-b">
+          <div
+            key={m.id}
+            className="p-4 border-b cursor-pointer"
+            onClick={handleUseMatch}
+          >
             {m.title}
           </div>
         ))}
