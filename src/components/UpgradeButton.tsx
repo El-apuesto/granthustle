@@ -3,31 +3,20 @@
 
 export default function UpgradeButton() {
   const handleClick = async () => {
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-      });
-
-      if (!res.ok) throw new Error("Failed");
-
-      const { url } = await res.json();
-
-      if (url) {
-        window.location.assign(url); // this one NEVER fails
-      } else {
-        alert("No checkout URL received");
-      }
-    } catch (err) {
-      alert("Upgrade failed – please refresh and try again");
-    }
+    const res = await fetch("/api/create-checkout-session", { method: "POST" });
+    const { url } = await res.json();
+    if (url) window.location.assign(url); // why: prevents "Stripe is not defined"
   };
 
   return (
     <button
       onClick={handleClick}
-      className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition"
+      className="mx-auto mt-8 w-80 max-w-full rounded-xl bg-emerald-600 px-8 py-5 text-center font-bold text-white shadow-lg transition hover:bg-emerald-500 active:scale-95"
     >
-      Upgrade to Pro
+      <div className="text-3xl">Try Pro 64% off</div>
+      <div className="text-sm opacity-90 mt-1">
+        or click to see all plans and prices
+      </div>
     </button>
   );
 }
