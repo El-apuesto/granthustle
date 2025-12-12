@@ -1,76 +1,33 @@
 "use client";
-import React, { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import React from "react";
 
-type Tier = "basic" | "standard" | "pro" | "enterprise";
+type Tier = "intro" | "season" | "annual";
 
 const TIERS: Record<
   Tier,
-  { priceLabel: string; priceId: string; description: string; accent: string }
+  { priceLabel: string; stripeUrl: string; description: string }
 > = {
-  basic: {
-    priceLabel: "$9.99",
-    priceId: "price_1Sa8yzG85r4wkmwW8CGlyij4",
-    description: "Starter — perfect for occasional searches",
-    accent: "emerald",
+  intro: {
+    priceLabel: "$9.99/mo",
+    stripeUrl: "https://buy.stripe.com/eVqeVd2Jh9mf82o7Uf",
+    description: "First 30 days, then $27.99/mo",
   },
-  standard: {
-    priceLabel: "$27.99",
-    priceId: "price_1Sa918G85r4wkmwW786cBMaH",
-    description: "Most popular — unlimited matches",
-    accent: "blue",
-  },
-  pro: {
+  season: {
     priceLabel: "$79.99",
-    priceId: "price_1Sa9BPG85r4wkmwWd0BQE2vz",
-    description: "Power user — templates + LOI + priority support",
-    accent: "purple",
+    stripeUrl: "https://buy.stripe.com/aFafZhfw31TNciE8Yj",
+    description: "4 months Pro access (one-time)",
   },
-  enterprise: {
-    priceLabel: "$199.99",
-    priceId: "price_1SbWyQG85r4wkmwWKFT2dwlf",
-    description: "Team & agency solutions",
-    accent: "amber",
+  annual: {
+    priceLabel: "$149.99",
+    stripeUrl: "https://buy.stripe.com/7sY8wP1Fd7e75Ug4I3",
+    description: "12 months Pro access (one-time)",
   },
 };
 
 export default function UpgradeButton() {
-  const [loading, setLoading] = useState<Tier | null>(null);
-  const { user } = useAuth();
-
-  const startCheckout = async (tier: Tier) => {
-    setLoading(tier);
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          priceId: TIERS[tier].priceId,
-          userId: user?.id || null,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data?.url) {
-        console.error("Checkout session creation failed:", data);
-        alert(data?.error || "Unable to start checkout.");
-        setLoading(null);
-        return;
-      }
-
-      // Redirect directly to Stripe checkout URL
-      window.location.href = data.url;
-    } catch (err) {
-      console.error("Checkout error:", err);
-      alert("Network error. Try again.");
-      setLoading(null);
-    }
-  };
-
   return (
     <div className="grid gap-4">
-      {(["basic", "standard", "pro", "enterprise"] as Tier[]).map((t) => {
+      {(["intro", "season", "annual"] as Tier[]).map((t) => {
         const tier = TIERS[t];
         return (
           <div
@@ -84,15 +41,14 @@ export default function UpgradeButton() {
               </div>
             </div>
             <div>
-              <button
-                onClick={() => startCheckout(t)}
-                disabled={loading === t}
-                className={`px-4 py-2 rounded-lg font-semibold text-white ${
-                  loading === t ? "opacity-60 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"
-                }`}
+              <a
+                href={tier.stripeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-lg font-semibold text-white bg-emerald-600 hover:bg-emerald-700 inline-block"
               >
-                {loading === t ? "Processing…" : "Upgrade"}
-              </button>
+                Upgrade
+              </a>
             </div>
           </div>
         );
