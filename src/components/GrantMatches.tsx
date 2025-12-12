@@ -3,7 +3,12 @@
 import React, { useState, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
-export default function GrantMatches({ matches }: { matches: { id: string; title: string }[] }) {
+interface GrantMatchesProps {
+  matches?: { id: string; title: string }[];
+  onUpgrade?: () => void;
+}
+
+export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesProps) {
   const [limitReached, setLimitReached] = useState(false);
   const { user } = useAuth();
 
