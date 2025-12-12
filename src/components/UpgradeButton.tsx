@@ -1,10 +1,6 @@
-// src/components/UpgradeButton.tsx
 "use client";
-
 import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+import { useAuth } from "../contexts/AuthContext";
 
 type Tier = "basic" | "standard" | "pro" | "enterprise";
 
@@ -40,40 +36,34 @@ const TIERS: Record<
 
 export default function UpgradeButton() {
   const [loading, setLoading] = useState<Tier | null>(null);
+  const { user } = useAuth();
 
   const startCheckout = async (tier: Tier) => {
     setLoading(tier);
     try {
-      const stripe = await stripePromise;
-      if (!stripe) {
-        alert("Stripe failed to initialize.");
-        setLoading(null);
-        return;
-      }
-
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId: TIERS[tier].priceId }),
+        body: JSON.stringify({ 
+          priceId: TIERS[tier].priceId,
+          userId: user?.id || null,
+        }),
       });
 
       const data = await res.json();
-      if (!res.ok || !data?.id) {
+
+      if (!res.ok || !data?.url) {
         console.error("Checkout session creation failed:", data);
         alert(data?.error || "Unable to start checkout.");
         setLoading(null);
         return;
       }
 
-      const result = await stripe.redirectToCheckout({ sessionId: data.id });
-      if ((result as any)?.error) {
-        console.error("Stripe redirect error:", (result as any).error);
-        alert((result as any).error.message || "Stripe redirect failed");
-      }
+      // Redirect directly to Stripe checkout URL
+      window.location.href = data.url;
     } catch (err) {
       console.error("Checkout error:", err);
       alert("Network error. Try again.");
-    } finally {
       setLoading(null);
     }
   };
@@ -93,17 +83,15 @@ export default function UpgradeButton() {
                 <div className="text-sm text-slate-400">{tier.description}</div>
               </div>
             </div>
-
             <div>
               <button
                 onClick={() => startCheckout(t)}
                 disabled={loading === t}
                 className={`px-4 py-2 rounded-lg font-semibold text-white ${
-                  loading === t ? "opacity-60" : `bg-emerald-600 hover:bg-emerald-700`
+                  loading === t ? "opacity-60 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"
                 }`}
-                // note: accent colors inlined to simplify; you can add dynamic tailwind classes with classnames if desired
               >
-                {loading === t ? "Processing…" : `Upgrade`}
+                {loading === t ? "Processing…" : "Upgrade"}
               </button>
             </div>
           </div>
