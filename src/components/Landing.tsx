@@ -71,13 +71,13 @@ export default function Landing() {
           Find My Money (5 free matches)
         </button>
 
-        {/* STRIPE SUBSCRIBE BUTTON */}
+        {/* STRIPE SUBSCRIBE BUTTON - properly sized */}
         <button
           onClick={handleSubscribe}
-          className="px-16 py-10 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-5xl rounded-3xl shadow-2xl transition transform hover:scale-105"
+          className="px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105"
         >
           Subscribe Now – $9.99 first month<br />
-          <span className="text-3xl">then $27.99/month (cancel anytime)</span>
+          <span className="text-lg">then $27.99/month (cancel anytime)</span>
         </button>
         <p className="text-slate-400 mt-8 text-lg">
           Free tier: 5 matches/month · No credit card required
