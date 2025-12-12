@@ -1,17 +1,14 @@
 "use client";
 import { DollarSign } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { useCallback } from "react";
 
-export default function Landing() {
-  const { user } = useAuth();
-  const router = useRouter();
+interface LandingProps {
+  onGetStarted: () => void;
+}
 
-  // Navigate to app page
-  const handleGetStarted = useCallback(() => {
-    router.push("/app");
-  }, [router]);
+export default function Landing({ onGetStarted }: LandingProps) {
+  const { user } = useAuth();
 
   // Stripe Subscription Handler
   const handleSubscribe = useCallback(async () => {
@@ -46,7 +43,7 @@ export default function Landing() {
             <span className="text-2xl font-bold text-white">GrantHustle</span>
           </div>
           <button
-            onClick={handleGetStarted}
+            onClick={onGetStarted}
             className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
           >
             Get Started
@@ -56,6 +53,11 @@ export default function Landing() {
 
       {/* HERO */}
       <div className="max-w-6xl mx-auto px-4 py-20 text-center">
+        <img 
+          src="/favicon.png" 
+          alt="GrantHustle Logo" 
+          className="w-32 h-32 mx-auto mb-8"
+        />
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
           Your rich uncle died<br />
           <span className="text-emerald-500">but you have to fill this out first</span>
@@ -65,13 +67,13 @@ export default function Landing() {
           that actually wants you to have it.
         </p>
         <button
-          onClick={handleGetStarted}
+          onClick={onGetStarted}
           className="px-10 py-5 bg-white text-emerald-700 text-2xl rounded-xl font-bold hover:bg-gray-100 transition mb-10"
         >
           Find My Money (5 free matches)
         </button>
 
-        {/* STRIPE SUBSCRIBE BUTTON - properly sized */}
+        {/* STRIPE SUBSCRIBE BUTTON */}
         <button
           onClick={handleSubscribe}
           className="px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105"
