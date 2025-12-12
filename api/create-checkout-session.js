@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { 
-      apiVersion: "2022-11-15" 
+      apiVersion: "2023-10-16" 
     });
 
     const { priceId, userId } = req.body || {};
@@ -19,16 +19,19 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Missing price id" });
     }
 
+    // Use your actual domain
+    const domain = req.headers.origin || "https://granthustle.org";
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "subscription",
       line_items: [{ price: chosenPriceId, quantity: 1 }],
-      success_url: `${req.headers.origin}/success`,
-      cancel_url: `${req.headers.origin}/`,
+      success_url: `${domain}/success`,
+      cancel_url: `${domain}/`,
+      client_reference_id: userId,
       metadata: { supabase_user_id: userId || "none" },
     });
 
-    // FIXED: Return the URL instead of just the ID
     return res.status(200).json({ 
       url: session.url,
       id: session.id 
