@@ -1,21 +1,40 @@
-"use client";
 import { DollarSign } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 interface LandingProps {
   onGetStarted: () => void;
-  onViewPricing?: () => void;
 }
 
-export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
+export default function Landing({ onGetStarted }: LandingProps) {
   const { user } = useAuth();
 
-  // Navigate to pricing page
-  const handleViewPricing = () => {
-    if (onViewPricing) {
-      onViewPricing();
-    } else {
-      window.location.href = '/pricing';
+  // Redirect to Stripe checkout for Basic tier
+  const handleSubscribe = async () => {
+    try {
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId: "price_1Sa8yzG85r4wkmwW8CGlyij4", // Basic tier $9.99
+          userId: user?.id || null,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No redirect URL returned:", data);
+        alert("Unable to start checkout. Please try again.");
+      }
+    } catch (err) {
+      console.error("Stripe checkout error:", err);
+      alert("An error occurred. Please try again.");
     }
   };
 
@@ -61,21 +80,13 @@ export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
           Find My Money (5 free matches)
         </button>
 
-        {/* SUBSCRIBE BUTTON - NOW GOES TO PRICING PAGE */}
+        {/* SUBSCRIBE BUTTON - REDIRECTS TO STRIPE */}
         <button
-          onClick={handleViewPricing}
+          onClick={handleSubscribe}
           className="block mx-auto px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105 mb-4"
         >
-          Subscribe Now – $9.99 first month<br />
-          <span className="text-lg">then $27.99/month (cancel anytime)</span>
-        </button>
-
-        {/* VIEW ALL PLANS LINK */}
-        <button
-          onClick={handleViewPricing}
-          className="text-emerald-400 hover:text-emerald-300 underline text-lg transition"
-        >
-          View all pricing options
+          Subscribe Now – $9.99/month<br />
+          <span className="text-lg">(cancel anytime)</span>
         </button>
 
         <p className="text-slate-400 mt-8 text-lg">
