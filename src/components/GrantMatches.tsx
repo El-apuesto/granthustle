@@ -1,7 +1,5 @@
-"use client";
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { getStripe } from "../lib/stripe/load-stripe"; // ADD THIS IMPORT
 
 interface GrantMatchesProps {
   matches?: { id: string; title: string }[];
@@ -10,45 +8,45 @@ interface GrantMatchesProps {
 
 export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesProps) {
   const [limitReached, setLimitReached] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
   const handleUseMatch = () => {
     setLimitReached(true);
   };
 
-  const handleUpgrade = useCallback(async () => {
-  try {
-    setLoading(true);
+  const handleUpgrade = async () => {
+    try {
+      setLoading(true);
 
-    // This will work on Vercel (uses /api routes)
-    const res = await fetch("/api/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        priceId: "price_1Sa9BPG85r4wkmwWd0BQE2vz", // Your Pro tier price
-        userId: user?.id || null,
-      }),
-    });
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          priceId: "price_1Sa918G85r4wkmwW786cBMaH", // Standard tier $27.99
+          userId: user?.id || null,
+        }),
+      });
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("No redirect URL returned:", data);
+        alert("Unable to start subscription checkout. Try again.");
+      }
+    } catch (err) {
+      console.error("Stripe session error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    const data = await res.json();
-
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      console.error("No redirect URL returned:", data);
-      alert("Unable to start subscription checkout. Try again.");
-    }
-  } catch (err) {
-    console.error("Stripe session error:", err);
-    alert("An unexpected error occurred. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-}, [user]);
+  };
 
   return (
     <div>
@@ -67,11 +65,10 @@ export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesPr
             
             <button
               onClick={handleUpgrade}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg mb-4 text-lg"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg mb-4 text-lg disabled:opacity-50"
             >
-              Upgrade Now – $9.99 first month
-              <br />
-              <span className="text-sm opacity-90">then $27.99/month</span>
+              {loading ? "Loading..." : "Upgrade Now – $27.99/month"}
             </button>
             
             <button
