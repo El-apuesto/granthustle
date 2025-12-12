@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import {
   DollarSign,
@@ -101,7 +99,7 @@ export default function Dashboard(): JSX.Element {
   const renderTab = () => {
     switch (activeTab) {
       case "matches":
-        return <GrantMatches onUpgrade={() => setActiveTab("templates")} />;
+        return <GrantMatches />;
       case "saved":
         return <SavedGrants isPro={!!isPro} />;
       case "templates":
@@ -117,7 +115,7 @@ export default function Dashboard(): JSX.Element {
       case "settings":
         return <Questionnaire onComplete={() => setActiveTab("matches")} />;
       default:
-        return <GrantMatches onUpgrade={() => setActiveTab("templates")} />;
+        return <GrantMatches />;
     }
   };
 
