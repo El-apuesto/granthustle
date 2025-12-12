@@ -1,37 +1,28 @@
 "use client";
 import { DollarSign } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { useCallback } from "react";
 
 interface LandingProps {
   onGetStarted: () => void;
+  onViewPricing?: () => void; // Add this if you want to navigate to pricing page
 }
 
-export default function Landing({ onGetStarted }: LandingProps) {
+export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
   const { user } = useAuth();
 
-  // Stripe Subscription Handler
-  const handleSubscribe = useCallback(async () => {
-    try {
-      const res = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user?.id || null,
-        }),
-      });
-      const data = await res.json();
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        console.error("No redirect URL returned from backend:", data);
-        alert("Unable to start subscription checkout. Try again.");
-      }
-    } catch (err) {
-      console.error("Stripe session error:", err);
-      alert("An unexpected error occurred. Please try again.");
+  // Simple navigation to pricing page
+  const handleViewPricing = () => {
+    if (onViewPricing) {
+      onViewPricing();
+    } else {
+      window.location.href = '/pricing';
     }
-  }, [user]);
+  };
+
+  // Direct Stripe checkout link (using your existing Stripe link)
+  const handleDirectCheckout = () => {
+    window.location.href = 'https://buy.stripe.com/eVqeVd2Jh9mf82o7Uf';
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -66,21 +57,32 @@ export default function Landing({ onGetStarted }: LandingProps) {
           Stop drowning in grant portals and government gibberish. We find money
           that actually wants you to have it.
         </p>
+
+        {/* FREE TIER BUTTON */}
         <button
           onClick={onGetStarted}
-          className="px-10 py-5 bg-white text-emerald-700 text-2xl rounded-xl font-bold hover:bg-gray-100 transition mb-10"
+          className="px-10 py-5 bg-white text-emerald-700 text-2xl rounded-xl font-bold hover:bg-gray-100 transition mb-6"
         >
           Find My Money (5 free matches)
         </button>
 
-        {/* STRIPE SUBSCRIBE BUTTON */}
+        {/* OPTION 1: Go to pricing page to see all plans */}
         <button
-          onClick={handleSubscribe}
-          className="px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105"
+          onClick={handleViewPricing}
+          className="block mx-auto px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105 mb-4"
         >
           Subscribe Now – $9.99 first month<br />
           <span className="text-lg">then $27.99/month (cancel anytime)</span>
         </button>
+
+        {/* OPTION 2: Or add a "View All Plans" button */}
+        <button
+          onClick={handleViewPricing}
+          className="text-emerald-400 hover:text-emerald-300 underline text-lg transition"
+        >
+          View all pricing options
+        </button>
+
         <p className="text-slate-400 mt-8 text-lg">
           Free tier: 5 matches/month · No credit card required
         </p>
