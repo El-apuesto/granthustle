@@ -1,13 +1,19 @@
 "use client";
-
 import { DollarSign } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { useCallback } from "react";
 
 export default function Landing() {
   const { user } = useAuth();
+  const router = useRouter();
 
-  // Stripe Subscription Handler (this one already works)
+  // Navigate to app page
+  const handleGetStarted = useCallback(() => {
+    router.push("/app");
+  }, [router]);
+
+  // Stripe Subscription Handler
   const handleSubscribe = useCallback(async () => {
     try {
       const res = await fetch("/api/create-checkout-session", {
@@ -17,9 +23,7 @@ export default function Landing() {
           userId: user?.id || null,
         }),
       });
-
       const data = await res.json();
-
       if (data?.url) {
         window.location.href = data.url;
       } else {
@@ -42,7 +46,7 @@ export default function Landing() {
             <span className="text-2xl font-bold text-white">GrantHustle</span>
           </div>
           <button
-            onClick={() => window.location.href = "/app"}
+            onClick={handleGetStarted}
             className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
           >
             Get Started
@@ -56,20 +60,18 @@ export default function Landing() {
           Your rich uncle died<br />
           <span className="text-emerald-500">but you have to fill this out first</span>
         </h1>
-
         <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto">
           Stop drowning in grant portals and government gibberish. We find money
           that actually wants you to have it.
         </p>
-
         <button
-          onClick={() => window.location.href = "/app"}
+          onClick={handleGetStarted}
           className="px-10 py-5 bg-white text-emerald-700 text-2xl rounded-xl font-bold hover:bg-gray-100 transition mb-10"
         >
           Find My Money (5 free matches)
         </button>
 
-        {/* STRIPE SUBSCRIBE BUTTON — this one already works */}
+        {/* STRIPE SUBSCRIBE BUTTON */}
         <button
           onClick={handleSubscribe}
           className="px-16 py-10 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-5xl rounded-3xl shadow-2xl transition transform hover:scale-105"
@@ -77,7 +79,6 @@ export default function Landing() {
           Subscribe Now – $9.99 first month<br />
           <span className="text-3xl">then $27.99/month (cancel anytime)</span>
         </button>
-
         <p className="text-slate-400 mt-8 text-lg">
           Free tier: 5 matches/month · No credit card required
         </p>
