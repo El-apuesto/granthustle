@@ -4,23 +4,17 @@ import { DollarSign } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useCallback } from "react";
 
-interface LandingProps {
-  onGetStarted: () => void;
-}
-
-export default function Landing({ onGetStarted }: LandingProps) {
+export default function Landing() {
   const { user } = useAuth();
 
-  // -----------------------------
-  // Stripe Subscription Handler
-  // -----------------------------
+  // Stripe Subscription Handler (this one already works)
   const handleSubscribe = useCallback(async () => {
     try {
       const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user?.id || null, // Still works for logged-out users
+          userId: user?.id || null,
         }),
       });
 
@@ -38,10 +32,6 @@ export default function Landing({ onGetStarted }: LandingProps) {
     }
   }, [user]);
 
-  // -----------------------------
-  // Component Render
-  // -----------------------------
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* NAV */}
@@ -52,7 +42,7 @@ export default function Landing({ onGetStarted }: LandingProps) {
             <span className="text-2xl font-bold text-white">GrantHustle</span>
           </div>
           <button
-            onClick={onGetStarted}
+            onClick={() => window.location.href = "/app"}
             className="px-6 py-2 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition-colors"
           >
             Get Started
@@ -73,13 +63,13 @@ export default function Landing({ onGetStarted }: LandingProps) {
         </p>
 
         <button
-          onClick={onGetStarted}
+          onClick={() => window.location.href = "/app"}
           className="px-10 py-5 bg-white text-emerald-700 text-2xl rounded-xl font-bold hover:bg-gray-100 transition mb-10"
         >
           Find My Money (5 free matches)
         </button>
 
-        {/* STRIPE SUBSCRIBE BUTTON */}
+        {/* STRIPE SUBSCRIBE BUTTON — this one already works */}
         <button
           onClick={handleSubscribe}
           className="px-16 py-10 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-5xl rounded-3xl shadow-2xl transition transform hover:scale-105"
