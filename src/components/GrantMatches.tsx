@@ -1,7 +1,7 @@
 "use client";
-
 import React, { useState, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import { getStripe } from "../lib/stripe/load-stripe"; // ADD THIS IMPORT
 
 interface GrantMatchesProps {
   matches?: { id: string; title: string }[];
@@ -13,25 +13,51 @@ export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesPr
   const { user } = useAuth();
 
   const handleUseMatch = () => {
-    // In real app this would check actual usage
     setLimitReached(true);
   };
 
-  // Use the same Stripe checkout handler as your landing page
   const handleUpgrade = useCallback(async () => {
     try {
-      const res = await fetch("/api/create-checkout-session", {
+      // Get the Stripe instance first
+      const stripe = await getStripe();
+      
+      if (!stripe) {
+        alert("Stripe failed to load. Please refresh and try again.");
+        return;
+      }
+
+      // Make sure this points to your actual backend URL
+      // Replace with your actual API endpoint
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://your-backend-url.com';
+      
+      const res = await fetch(`${apiUrl}/api/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: user?.id || null,
         }),
       });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
+      
       if (data?.url) {
         window.location.href = data.url;
+      } else if (data?.sessionId) {
+        // If your backend returns a sessionId instead of URL
+        const result = await stripe.redirectToCheckout({
+          sessionId: data.sessionId,
+        });
+        
+        if (result.error) {
+          console.error("Stripe checkout error:", result.error);
+          alert(result.error.message);
+        }
       } else {
-        console.error("No redirect URL returned from backend:", data);
+        console.error("No redirect URL or sessionId returned:", data);
         alert("Unable to start subscription checkout. Try again.");
       }
     } catch (err) {
@@ -44,25 +70,26 @@ export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesPr
     <div>
       {/* Upgrade Modal when limit reached */}
       {limitReached && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="bg-slate-900 rounded-2xl p-8 max-w-md w-full border border-slate-700 text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">You've Hit Your Free Limit</h2>
-            <p className="text-slate-300 mb-8 text-lg">
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="bg-slate-800 p-8 rounded-xl max-w-md w-full mx-4">
+            <h3 className="text-2xl font-bold mb-4">
+              You've Hit Your Free Limit
+            </h3>
+            <p className="text-slate-300 mb-6">
               You've used all 5 free grant matches this month.
-              <br />
+              
               Upgrade now to unlock unlimited searches.
             </p>
-
-            {/* BIG WORKING UPGRADE BUTTON */}
+            
             <button
               onClick={handleUpgrade}
-              className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 text-white text-2xl font-bold rounded-xl transition transform hover:scale-105 shadow-lg mb-4"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg mb-4 text-lg"
             >
               Upgrade Now – $9.99 first month
               <br />
-              <span className="text-lg">then $27.99/month</span>
+              <span className="text-sm opacity-90">then $27.99/month</span>
             </button>
-
+            
             <button
               onClick={() => setLimitReached(false)}
               className="text-slate-400 hover:text-white text-sm underline"
@@ -74,17 +101,13 @@ export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesPr
       )}
 
       {/* Grant List */}
-      <div className="space-y-4">
+      <div>
         {matches?.length === 0 ? (
-          <p className="text-center text-slate-400 py-10">No grants found yet. Try searching!</p>
+          <p>No grants found yet. Try searching!</p>
         ) : (
           matches.map((grant) => (
-            <div
-              key={grant.id}
-              onClick={handleUseMatch}
-              className="bg-slate-800 p-6 rounded-lg border border-slate-700 hover:border-emerald-500 transition cursor-pointer"
-            >
-              <h3 className="text-xl font-semibold text-white">{grant.title}</h3>
+            <div key={grant.id}>
+              <h4>{grant.title}</h4>
             </div>
           ))
         )}
