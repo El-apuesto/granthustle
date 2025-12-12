@@ -1,4 +1,4 @@
-// /api/create-checkout-session.js
+// api/create-checkout-session.js
 import Stripe from "stripe";
 
 export default async function handler(req, res) {
@@ -8,10 +8,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: "2022-11-15" });
-    const { priceId, userId } = req.body || {};
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { 
+      apiVersion: "2022-11-15" 
+    });
 
+    const { priceId, userId } = req.body || {};
     const chosenPriceId = priceId || process.env.STRIPE_PRICE_ID_PRO;
+
     if (!chosenPriceId) {
       return res.status(400).json({ error: "Missing price id" });
     }
@@ -25,10 +28,15 @@ export default async function handler(req, res) {
       metadata: { supabase_user_id: userId || "none" },
     });
 
-    // Return session.id so frontend can call stripe.redirectToCheckout({ sessionId })
-    return res.status(200).json({ id: session.id });
+    // FIXED: Return the URL instead of just the ID
+    return res.status(200).json({ 
+      url: session.url,
+      id: session.id 
+    });
   } catch (err) {
     console.error("Stripe session error:", err);
-    return res.status(500).json({ error: err.message || "internal_error" });
+    return res.status(500).json({ 
+      error: err.message || "internal_error" 
+    });
   }
 }
