@@ -1,15 +1,12 @@
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 import { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { supabase } from './lib/supabase';
 import Landing from './components/Landing';
 import Auth from './components/Auth';
 import Questionnaire from './components/Questionnaire';
-import PricingPage from './components/PricingPage';
 import Dashboard from './components/Dashboard';
 
-type AppState = 'landing' | 'auth' | 'questionnaire' | 'pricing' | 'dashboard';
+type AppState = 'landing' | 'auth' | 'questionnaire' | 'dashboard';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -18,18 +15,15 @@ function AppContent() {
 
   useEffect(() => {
     if (loading) return;
-
     if (!user) {
       setAppState('landing');
       return;
     }
-
     checkQuestionnaireStatus();
   }, [user, loading]);
 
   const checkQuestionnaireStatus = async () => {
     if (!user) return;
-
     const { data } = await supabase
       .from('profiles')
       .select('questionnaire_completed')
@@ -58,11 +52,6 @@ function AppContent() {
     setAppState('dashboard');
   };
 
-  const handleSelectPlan = (plan: string) => {
-    console.log('Selected plan:', plan);
-    setAppState('dashboard');
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -81,10 +70,6 @@ function AppContent() {
 
   if (appState === 'questionnaire') {
     return <Questionnaire onComplete={handleQuestionnaireComplete} />;
-  }
-
-  if (appState === 'pricing') {
-    return <PricingPage onSelectPlan={handleSelectPlan} />;
   }
 
   if (appState === 'dashboard') {
