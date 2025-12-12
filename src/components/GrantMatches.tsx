@@ -17,54 +17,38 @@ export default function GrantMatches({ matches = [], onUpgrade }: GrantMatchesPr
   };
 
   const handleUpgrade = useCallback(async () => {
-    try {
-      // Get the Stripe instance first
-      const stripe = await getStripe();
-      
-      if (!stripe) {
-        alert("Stripe failed to load. Please refresh and try again.");
-        return;
-      }
+  try {
+    setLoading(true);
 
-      // Make sure this points to your actual backend URL
-      // Replace with your actual API endpoint
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://your-backend-url.com';
-      
-      const res = await fetch(`${apiUrl}/api/create-checkout-session`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user?.id || null,
-        }),
-      });
+    // This will work on Vercel (uses /api routes)
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        priceId: "price_1Sa9BPG85r4wkmwWd0BQE2vz", // Your Pro tier price
+        userId: user?.id || null,
+      }),
+    });
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      
-      if (data?.url) {
-        window.location.href = data.url;
-      } else if (data?.sessionId) {
-        // If your backend returns a sessionId instead of URL
-        const result = await stripe.redirectToCheckout({
-          sessionId: data.sessionId,
-        });
-        
-        if (result.error) {
-          console.error("Stripe checkout error:", result.error);
-          alert(result.error.message);
-        }
-      } else {
-        console.error("No redirect URL or sessionId returned:", data);
-        alert("Unable to start subscription checkout. Try again.");
-      }
-    } catch (err) {
-      console.error("Stripe session error:", err);
-      alert("An unexpected error occurred. Please try again.");
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
     }
-  }, [user]);
+
+    const data = await res.json();
+
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      console.error("No redirect URL returned:", data);
+      alert("Unable to start subscription checkout. Try again.");
+    }
+  } catch (err) {
+    console.error("Stripe session error:", err);
+    alert("An unexpected error occurred. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+}, [user]);
 
   return (
     <div>
