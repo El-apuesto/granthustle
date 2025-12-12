@@ -4,24 +4,19 @@ import { useAuth } from "../contexts/AuthContext";
 
 interface LandingProps {
   onGetStarted: () => void;
-  onViewPricing?: () => void; // Add this if you want to navigate to pricing page
+  onViewPricing?: () => void;
 }
 
 export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
   const { user } = useAuth();
 
-  // Simple navigation to pricing page
+  // Navigate to pricing page
   const handleViewPricing = () => {
     if (onViewPricing) {
       onViewPricing();
     } else {
       window.location.href = '/pricing';
     }
-  };
-
-  // Direct Stripe checkout link (using your existing Stripe link)
-  const handleDirectCheckout = () => {
-    window.location.href = 'https://buy.stripe.com/eVqeVd2Jh9mf82o7Uf';
   };
 
   return (
@@ -66,7 +61,7 @@ export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
           Find My Money (5 free matches)
         </button>
 
-        {/* OPTION 1: Go to pricing page to see all plans */}
+        {/* SUBSCRIBE BUTTON - NOW GOES TO PRICING PAGE */}
         <button
           onClick={handleViewPricing}
           className="block mx-auto px-12 py-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-2xl rounded-2xl shadow-2xl transition transform hover:scale-105 mb-4"
@@ -75,7 +70,7 @@ export default function Landing({ onGetStarted, onViewPricing }: LandingProps) {
           <span className="text-lg">then $27.99/month (cancel anytime)</span>
         </button>
 
-        {/* OPTION 2: Or add a "View All Plans" button */}
+        {/* VIEW ALL PLANS LINK */}
         <button
           onClick={handleViewPricing}
           className="text-emerald-400 hover:text-emerald-300 underline text-lg transition"
