@@ -1,64 +1,12 @@
 import { Check } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
 
 interface PricingPageProps {
   onSelectPlan: (plan: 'free' | 'intro' | 'season' | 'annual') => void;
 }
 
-const PRICE_IDS = {
-  intro: 'price_1Sa8yzG85r4wkmwW8CGlyij4',
-  season: 'price_1Sa8yzG85r4wkmwW8CGlyij4', // Replace with actual season pass price ID
-  annual: 'price_1Sa8yzG85r4wkmwW8CGlyij4', // Replace with actual annual price ID
-};
-
-const SUPABASE_URL = 'https://ooxkwrnmnygatxsaxhspd.supabase.co';
-
 export default function PricingPage({ onSelectPlan }: PricingPageProps) {
   const { user } = useAuth();
-  const [loading, setLoading] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleCheckout = async (priceId: string, planType: string) => {
-    setLoading(planType);
-    setError(null);
-
-    try {
-      const res = await fetch(
-        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${(await user?.getSession())?.access_token || ''}`,
-          },
-          body: JSON.stringify({
-            priceId,
-            userId: user?.id || null,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to create checkout session');
-      }
-
-      const data = await res.json();
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('No checkout URL returned');
-      }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
-      setError(errorMessage);
-      console.error('Checkout error:', err);
-    } finally {
-      setLoading(null);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
@@ -71,12 +19,6 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
             Zero corporate BS. Just grants that actually want to give you money.
           </p>
         </div>
-
-        {error && (
-          <div className="mb-8 p-4 bg-red-900/20 border border-red-500/50 rounded-lg text-red-200">
-            {error}
-          </div>
-        )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-slate-800 border-2 border-slate-700 rounded-lg p-6 flex flex-col">
@@ -151,13 +93,14 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
                 <span>Unlimited saved grants</span>
               </li>
             </ul>
-            <button
-              onClick={() => handleCheckout(PRICE_IDS.intro, 'intro')}
-              disabled={loading === 'intro'}
-              className="w-full py-4 bg-white text-emerald-700 rounded font-bold text-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg"
+            <a
+              href="https://buy.stripe.com/eVqeVd2Jh9mf82o7Uf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-4 bg-white text-emerald-700 rounded font-bold text-lg hover:bg-slate-100 transition-colors shadow-lg text-center block"
             >
-              {loading === 'intro' ? 'Processing...' : 'Start for $9.99/month'}
-            </button>
+              Start for $9.99/month
+            </a>
           </div>
 
           <div className="bg-slate-800 border-2 border-slate-700 rounded-lg p-6 flex flex-col">
@@ -184,13 +127,14 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
                 <span>Perfect for grant season</span>
               </li>
             </ul>
-            <button
-              onClick={() => handleCheckout(PRICE_IDS.season, 'season')}
-              disabled={loading === 'season'}
-              className="w-full py-3 bg-slate-700 text-white rounded font-semibold hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            <a
+              href="https://buy.stripe.com/aFafZhfw31TNciE8Yj"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 bg-slate-700 text-white rounded font-semibold hover:bg-slate-600 transition-colors text-center block"
             >
-              {loading === 'season' ? 'Processing...' : 'Buy Season Pass'}
-            </button>
+              Buy Season Pass
+            </a>
           </div>
         </div>
 
@@ -215,13 +159,14 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
                 <span>Save $199 vs monthly</span>
               </li>
             </ul>
-            <button
-              onClick={() => handleCheckout(PRICE_IDS.annual, 'annual')}
-              disabled={loading === 'annual'}
-              className="w-full py-3 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            <a
+              href="https://buy.stripe.com/7sY8wP1Fd7e75Ug4I3"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 bg-emerald-600 text-white rounded font-semibold hover:bg-emerald-700 transition-colors text-center block"
             >
-              {loading === 'annual' ? 'Processing...' : 'Buy Annual Pass'}
-            </button>
+              Buy Annual Pass
+            </a>
           </div>
         </div>
 
