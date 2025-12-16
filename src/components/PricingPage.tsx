@@ -12,6 +12,8 @@ const PRICE_IDS = {
   annual: 'price_1Sa8yzG85r4wkmwW8CGlyij4', // Replace with actual annual price ID
 };
 
+const SUPABASE_URL = 'https://ooxkwrnmnygatxsaxhspd.supabase.co';
+
 export default function PricingPage({ onSelectPlan }: PricingPageProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
@@ -23,7 +25,7 @@ export default function PricingPage({ onSelectPlan }: PricingPageProps) {
 
     try {
       const res = await fetch(
-        'https://YOUR_SUPABASE_URL/functions/v1/create-checkout-session',
+        `${SUPABASE_URL}/functions/v1/create-checkout-session`,
         {
           method: 'POST',
           headers: {
