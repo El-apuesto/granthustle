@@ -47,6 +47,10 @@ function AppContent() {
     setAppState('auth');
   };
 
+  const handlePricing = () => {
+    setAppState('pricing');
+  };
+
   const handleAuthSuccess = () => {
     checkQuestionnaireStatus();
   };
@@ -70,7 +74,7 @@ function AppContent() {
   }
 
   if (appState === 'landing') {
-    return <Landing onGetStarted={handleGetStarted} />;
+    return <Landing onGetStarted={handleGetStarted} onPricing={handlePricing} />;
   }
 
   if (appState === 'auth') {
