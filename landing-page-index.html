@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Hustle - Find Your Perfect Grant Opportunity</title>
+    <meta name="description" content="Grant Hustle helps nonprofits, artists, and solopreneurs find and apply for grants. Powered by Grant Geenie AI.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #ffffff;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-primary: #10b981;
+            --accent-hover: #059669;
+            --border-color: #475569;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --accent-primary: #059669;
+            --accent-hover: #047857;
+            --border-color: #cbd5e1;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .wide-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            color: var(--accent-primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Hero Split Screen */
+        .hero {
+            padding: 80px 0;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content .badge {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .hero-title .highlight {
+            color: var(--accent-primary);
+        }
+
+        .story-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .story-text {
+            color: var(--text-secondary);
+            font-size: 18px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 18px 36px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* Hero Visual Side */
+        .hero-visual {
+            position: relative;
+        }
+
+        .stats-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 48px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            font-size: 24px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .mini-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .mini-stat {
+            text-align: center;
+        }
+
+        .mini-stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent-primary);
+        }
+
+        .mini-stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 48px 0;
+            margin: 80px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 48px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--accent-primary);
+            line-height: 1;
+        }
+
+        .stat-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            font-weight: 600;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Mission */
+        .mission-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 20px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        /* Grant Updates Grid */
+        .updates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .update-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .update-card h2 {
+            font-size: 28px;
+            margin-bottom: 32px;
+            color: var(--text-primary);
+        }
+
+        .news-item {
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .news-date {
+            color: var(--accent-primary);
+            font-size: 14px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .news-item h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .news-item p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .read-more {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* Deadlines */
+        .deadline-item {
+            display: flex;
+            gap: 24px;
+            padding: 24px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .deadline-item.urgent {
+            border-color: var(--accent-primary);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .deadline-date {
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .date-day {
+            display: block;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent-primary);
+            line-height: 1;
+        }
+
+        .date-month {
+            display: block;
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .deadline-info h3 {
+            font-size: 20px;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .deadline-amount {
+            color: var(--accent-primary);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .deadline-label {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .urgent-label {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* Blog Preview */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .blog-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+
+        .blog-content {
+            padding: 24px;
+        }
+
+        .blog-category {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .blog-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .blog-card h3 a {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .blog-card h3 a:hover {
+            color: var(--accent-primary);
+        }
+
+        .blog-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Newsletter */
+        .newsletter {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 60px;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .newsletter p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 12px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 60px 0 32px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-col h4 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .footer-col p,
+        .footer-col ul {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .footer-col a:hover {
+            color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .updates-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-title {
+                font-size: 36px;
+            }
+            .stat-number {
+                font-size: 48px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .newsletter-form {
+                flex-direction: column;
+            }
+            .cta-buttons {
+                flex-direction: column;
+            }
+            .btn-large {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <svg class="logo-icon" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                    </svg>
+                    <span>Grant Hustle</span>
+                </div>
+                <div class="nav-buttons">
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <a href="https://app.granthustle.org" class="btn btn-primary">Launch App</a>
+                    <a href="https://blog.granthustle.org" class="btn btn-outline">Read Blog</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Split Screen -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <!-- Left: Story Content -->
+                <div class="hero-content">
+                    <span class="badge">Our Story</span>
+                    <h1 class="hero-title">
+                        Grant Funding <span class="highlight">Shouldn't Be This Hard</span>
+                    </h1>
+                    <div class="story-box">
+                        <p class="story-text">
+                            When my uncle passed away, I realized how many dreams go unfunded. 
+                            Grant Hustle was born from that moment - a commitment to help creators, 
+                            nonprofits, and entrepreneurs find the funding they need to turn their 
+                            visions into reality.
+                        </p>
+                    </div>
+                    <div class="cta-buttons">
+                        <a href="https://app.granthustle.org" class="btn btn-primary btn-large">
+                            🚀 Launch Grant Geenie App
+                        </a>
+                        <a href="https://blog.granthustle.org" class="btn btn-outline btn-large">
+                            📰 Read G³ Blog
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Visual/Stats -->
+                <div class="hero-visual">
+                    <div class="stats-card">
+                        <div class="stat-number">$180M+</div>
+                        <div class="stat-label">In Grants Available</div>
+                        <div class="mini-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">10K+</div>
+                                <div class="mini-stat-label">Grants Tracked</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">50</div>
+                                <div class="mini-stat-label">States Covered</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">AI</div>
+                                <div class="mini-stat-label">Powered Matching</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">24/7</div>
+                                <div class="mini-stat-label">Deadline Tracking</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">10,000+</div>
+                    <div class="stat-title">Grants Tracked</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">50</div>
+                    <div class="stat-title">States Covered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">AI</div>
+                    <div class="stat-title">Powered Matching</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">$180M</div>
+                    <div class="stat-title">Funding Available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mission Statement -->
+    <section id="mission">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Mission</h2>
+            </div>
+            <div class="mission-content">
+                <p>
+                    At Grant Hustle, we believe that funding shouldn't be a barrier to impact. 
+                    Our mission is to democratize access to grants through intelligent search, 
+                    real-time alerts, and a community dedicated to making funding accessible 
+                    for everyone - from solo artists to established nonprofits.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grant News & Deadlines -->
+    <section>
+        <div class="container">
+            <div class="updates-grid">
+                <!-- Grant News -->
+                <div class="update-card">
+                    <h2>📢 Latest Grant News</h2>
+                    <div class="news-list">
+                        <article class="news-item">
+                            <span class="news-date">Jan 3, 2026</span>
+                            <h3>Federal Arts Funding Increased for 2026</h3>
+                            <p>NEA announces $180M available for individual artists and organizations.</p>
+                            <a href="#" class="read-more">Read more →</a>
+                        </article>
+                        
+                        <article class="news-item">
+                            <span class="news-date">Jan 2, 2026</span>
+                            <h3>New SBIR/STTR Programs Open</h3>
+                            <p>Technology startups can now apply for up to $1.8M in non-dilutive funding.</p>
+                            <a href="#" class="read-more">Read more →</a>
+                        </article>
+                        
+                        <article class="news-item">
+                            <span class="news-date">Dec 30, 2025</span>
+                            <h3>Education Grants Extended to Q2</h3>
+                            <p>Department of Education extends application deadlines through June 2026.</p>
+                            <a href="#" class="read-more">Read more →</a>
+                        </article>
+                    </div>
+                    <a href="https://blog.granthustle.org" class="btn btn-outline" style="margin-top: 24px;">View All News</a>
+                </div>
+                
+                <!-- Upcoming Deadlines -->
+                <div class="update-card">
+                    <h2>⏰ Big Deadlines Coming Up</h2>
+                    <div class="deadline-list">
+                        <div class="deadline-item urgent">
+                            <div class="deadline-date">
+                                <span class="date-day">15</span>
+                                <span class="date-month">JAN</span>
+                            </div>
+                            <div class="deadline-info">
+                                <h3>NEA Artist Fellowship</h3>
+                                <p class="deadline-amount">Up to $25,000</p>
+                                <span class="deadline-label urgent-label">Urgent</span>
+                            </div>
+                        </div>
+                        
+                        <div class="deadline-item">
+                            <div class="deadline-date">
+                                <span class="date-day">31</span>
+                                <span class="date-month">JAN</span>
+                            </div>
+                            <div class="deadline-info">
+                                <h3>USDA Rural Development</h3>
+                                <p class="deadline-amount">Up to $500,000</p>
+                                <span class="deadline-label">This Month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="deadline-item">
+                            <div class="deadline-date">
+                                <span class="date-day">14</span>
+                                <span class="date-month">FEB</span>
+                            </div>
+                            <div class="deadline-info">
+                                <h3>NSF Research Grants</h3>
+                                <p class="deadline-amount">Varies</p>
+                                <span class="deadline-label">Next Month</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://app.granthustle.org" class="btn btn-outline" style="margin-top: 24px;">See All Deadlines</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Preview -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Latest from G³ - Grant Genie Gazette</h2>
+                <p class="section-subtitle">Stay informed with insights, tips, and grant opportunities</p>
+            </div>
+            
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="blog-image">
+                        [Featured Image]
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-category">Innovation Monday</span>
+                        <h3><a href="https://blog.granthustle.org">5 Grant Writing Tips That Actually Work</a></h3>
+                        <p class="blog-excerpt">Discover proven strategies to make your grant applications stand out from the competition...</p>
+                        <div class="blog-meta">
+                            <time>January 6, 2026</time>
+                            <a href="https://blog.granthustle.org" class="read-more">Read more →</a>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image">
+                        [Featured Image]
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-category">Feature Friday</span>
+                        <h3><a href="https://blog.granthustle.org">How Grant Geenie Uses AI to Match Grants</a></h3>
+                        <p class="blog-excerpt">Learn about the technology behind our intelligent grant matching system...</p>
+                        <div class="blog-meta">
+                            <time>January 3, 2026</time>
+                            <a href="https://blog.granthustle.org" class="read-more">Read more →</a>
+                        </div>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <div class="blog-image">
+                        [Featured Image]
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-category">Wisdom Wednesday</span>
+                        <h3><a href="https://blog.granthustle.org">Understanding Federal vs State Grants</a></h3>
+                        <p class="blog-excerpt">Navigate the differences between federal and state funding opportunities...</p>
+                        <div class="blog-meta">
+                            <time>January 1, 2026</time>
+                            <a href="https://blog.granthustle.org" class="read-more">Read more →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Grant Geenie?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Matching</h3>
+                    <p>AI-powered algorithm matches you with grants that fit your profile and goals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3>State Filtering</h3>
+                    <p>Find federal grants filtered by your state's specific requirements and opportunities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>Deadline Tracking</h3>
+                    <p>Never miss an opportunity with our comprehensive deadline tracking system.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Success Analytics</h3>
+                    <p>Track your applications and improve your success rate over time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section>
+        <div class="container">
+            <div class="newsletter">
+                <h2>Stay Updated on Grant Opportunities</h2>
+                <p>Get weekly grant deadlines, tips, and opportunities delivered to your inbox.</p>
+                <form class="newsletter-form" action="#" method="post">
+                    <input type="email" placeholder="Enter your email address" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Grant Hustle</h4>
+                    <p>Making grant funding accessible to nonprofits, artists, and solopreneurs.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="https://app.granthustle.org">Grant Geenie App</a></li>
+                        <li><a href="https://blog.granthustle.org">G³ Blog</a></li>
+                        <li><a href="/resources.html">Resources</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Programs</h4>
+                    <ul>
+                        <li><a href="/affiliate.html">Affiliate Marketing</a></li>
+                        <li><a href="/referral.html">Referral Program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/refund.html">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Grant Hustle. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            const icon = document.getElementById('theme-icon');
+            
+            html.setAttribute('data-theme', newTheme);
+            icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
+            
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const icon = document.getElementById('theme-icon');
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            icon.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        });
+    </script>
+</body>
+</html>
